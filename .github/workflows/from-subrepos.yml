@@ -20,8 +20,8 @@ jobs:
       - name: Setup remotes
         run: |
           echo "Setting up subrepo remotes..."
-          git remote add subrepo https://github.com/anafsouza/subrepo.git || true
-          git remote add subrepo-number-2 https://github.com/anafsouza/subrepo-number-2.git || true
+          git remote add subrepo https://github.com/anafsouza/subrepo || true
+          git remote add subrepo-number-2 https://github.com/anafsouza/subrepo-number-2 || true
 
       - name: Pull matching subtree
         run: |
