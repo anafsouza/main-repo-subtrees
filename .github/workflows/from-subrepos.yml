@@ -1,0 +1,46 @@
+name: Sync subrepos via subtree
+
+on:
+  repository_dispatch:
+    types: [update-from-subrepo, update-from-subrepo-number-2]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main-repo-subtrees
+        uses: actions/checkout@v4
+
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup remotes
+        run: |
+          echo "Setting up subrepo remotes..."
+          git remote add subrepo https://github.com/anafsouza/subrepo.git || true
+          git remote add subrepo-number-2 https://github.com/anafsouza/subrepo-number-2.git || true
+
+      - name: Pull matching subtree
+        run: |
+          echo "Starting subtree sync..."
+
+          if [[ "${{ github.event.action }}" == "update-from-subrepo" ]]; then
+            echo "Pulling subtree: subrepo"
+            git fetch subrepo main
+            git subtree pull --prefix=models/subrepo subrepo main --squash || echo "Nothing to pull"
+          elif [[ "${{ github.event.action }}" == "update-from-subrepo-number-2" ]]; then
+            echo "Pulling subtree: subrepo-number-2"
+            git fetch subrepo-number-2 main
+            git subtree pull --prefix=models/subrepo-number-2 subrepo-number-2 main --squash || echo "Nothing to pull"
+          else
+            echo "Unknown dispatch event: ${{ github.event.action }}"
+            exit 1
+          fi
+
+      - name: Push changes if any
+        run: |
+          echo "Checking for changes..."
+          git diff --quiet || (git commit -am "Update subtree via CI" && git push origin main)
