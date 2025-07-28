@@ -3,6 +3,7 @@ name: Sync subrepos via subtree
 on:
   repository_dispatch:
     types: [update-from-subrepo, update-from-subrepo-number-2]
+  workflow_dispatch:
 
 jobs:
   sync:
