@@ -33,7 +33,7 @@ add-subtrees:
 
 	@if [ ! -d "subrepo-number-2" ]; then \
 		echo "Adding subtree: subrepo-number-2"; \
-		git subtree add --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH) --squash; \
+		git subtree add --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH); \
 	else \
 		echo "Subtree 'subrepo-number-2' already exists, skipping."; \
 	fi
@@ -43,11 +43,11 @@ add-subtrees:
 # =======================
 pull-subrepo:
 	git fetch $(TEAM_A_REMOTE) $(BRANCH)
-	git subtree pull --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH) --squash --allow-unrelated-histories || echo "Nothing to pull"
+	git subtree pull --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH) || echo "Nothing to pull"
 
 pull-subrepo-number-2:
 	git fetch $(TEAM_B_REMOTE) $(BRANCH)
-	git subtree pull --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH) --squash --allow-unrelated-histories || echo "Nothing to pull"
+	git subtree pull --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH) || echo "Nothing to pull"
 
 # pull-team-c:
 # 	git subtree pull --prefix=$(TEAM_C_PREFIX) $(TEAM_C_REMOTE) $(BRANCH) --squash
