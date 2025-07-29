@@ -43,9 +43,12 @@ jobs:
 
 
       - name: Commit and push if there are changes
+        env:
+          GH_USER: ${{ secrets.USER }}
+          GH_EMAIL: ${{ secrets.EMAIL }}
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name $GH_USER
+          git config user.email $GH_EMAIL
 
           git push
       # echo "Committing changes..."
@@ -57,5 +60,5 @@ jobs:
         # else
         #   echo "No changes to commit."
           # fi
-          
+
 
