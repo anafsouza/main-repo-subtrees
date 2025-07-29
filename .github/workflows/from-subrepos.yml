@@ -24,8 +24,8 @@ jobs:
       - name: Setup remotes
         run: |
           echo "Setting up subrepo remotes..."
-          git remote add subrepo https://github.com/anafsouza/subrepo.git || true
-          git remote add subrepo-number-2 https://github.com/anafsouza/subrepo-number-2.git || true
+          git remote add subrepo https://x-access-token:${{ secrets.MLOPS_PROD_TOKEN }}@github.com/anafsouza/subrepo.git || true
+          git remote add subrepo-number-2 https://x-access-token:${{ secrets.MLOPS_PROD_TOKEN }}@github.com/anafsouza/subrepo-number-2.git || true
 
       - name: Pull matching subtree
         run: |
