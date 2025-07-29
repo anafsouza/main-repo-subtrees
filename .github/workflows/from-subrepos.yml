@@ -42,7 +42,12 @@ jobs:
           fi
 
 
-      - name: Push changes if any
+      - name: Commit and push if there are changes
         run: |
-          echo "Checking for changes..."
-          git diff --quiet || (git commit -am "Update subtree via CI" && git push origin main)
+          git add .
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: sync from subrepos"
+            git push origin main
+          fi
