@@ -39,13 +39,27 @@ jobs:
           ACTION="${{ github.event.action }}"
           CHANGED_PATH=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | head -n 1)
 
-          if [[ "$ACTION" == "update-from-subrepo" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo* ) ]]; then
+          if [[ "$ACTION" == "update-from-subrepo" ]]; then
             make pull-subrepo
-          elif [[ "$ACTION" == "update-from-subrepo-number-2" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo-number-2* ) ]]; then
+          elif [[ "$ACTION" == "update-from-subrepo-number-2" ]]; then
             make pull-subrepo-number-2
           else
             echo "No matching subtree to sync or unknown trigger."
           fi
+        # run: |
+        #   echo "Starting subtree sync..."
+
+        #   EVENT="${{ github.event_name }}"
+        #   ACTION="${{ github.event.action }}"
+        #   CHANGED_PATH=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | head -n 1)
+
+        #   if [[ "$ACTION" == "update-from-subrepo" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo* ) ]]; then
+        #     make pull-subrepo
+        #   elif [[ "$ACTION" == "update-from-subrepo-number-2" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo-number-2* ) ]]; then
+        #     make pull-subrepo-number-2
+        #   else
+        #     echo "No matching subtree to sync or unknown trigger."
+        #   fi
 
 
       - name: Commit and push if there are changes
