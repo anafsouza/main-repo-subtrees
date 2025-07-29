@@ -56,8 +56,14 @@ jobs:
           git config user.name $GH_USER
           git config user.email $GH_EMAIL
 
-          git push
-      # echo "Committing changes..."
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected, committing..."
+            git add .
+            git commit -m "chore: sync from subrepos"
+            git push
+          else
+            echo "No changes to commit."
+          fi        
       # git add .
       # git commit -m "chore: sync from subrepos"
       # git push 
