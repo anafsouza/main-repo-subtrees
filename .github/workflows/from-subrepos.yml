@@ -51,7 +51,8 @@ jobs:
             echo "Committing changes..."
             git add .
             git commit -m "chore: sync from subrepos"
-            git push origin main
+            git push 
+            
         # if [ -n "$(git status --porcelain)" ]; then
         # else
         #   echo "No changes to commit."
