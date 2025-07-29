@@ -31,17 +31,25 @@ jobs:
         run: |
           echo "Starting subtree sync..."
 
-          if [[ "${{ github.event.action }}" == "update-from-subrepo" ]]; then
-            echo "Pulling subtree: subrepo"
+          EVENT="${{ github.event_name }}"
+          ACTION="${{ github.event.action }}"
+          CHANGED_PATH=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | head -n 1)
+
+          echo "Subrepo: dispatch OR push that modified subrepo/"
+          if [[ "$ACTION" == "update-from-subrepo" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo* ) ]]; then
+            echo "Syncing subrepo..."
             git fetch subrepo main
-            git subtree pull --prefix=models/subrepo subrepo main --squash || echo "Nothing to pull"
-          elif [[ "${{ github.event.action }}" == "update-from-subrepo-number-2" ]]; then
-            echo "Pulling subtree: subrepo-number-2"
+            git subtree pull --prefix=subrepo subrepo main --squash || echo "Nothing to pull"
+
+          echo "Subrepo-number-2: dispatch OR push that modified subrepo-number-2/"
+          elif [[ "$ACTION" == "update-from-subrepo-number-2" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo-number-2* ) ]]; then
+            echo "Syncing subrepo-number-2..."
             git fetch subrepo-number-2 main
-            git subtree pull --prefix=models/subrepo-number-2 subrepo-number-2 main --squash || echo "Nothing to pull"
+            git subtree pull --prefix=subrepo-number-2 subrepo-number-2 main --squash || echo "Nothing to pull"
+
           else
-            echo "Unknown dispatch event: ${{ github.event.action }}"
-            exit 1
+            echo "No matching subtree to sync or unknown trigger."
+            exit 0
           fi
 
       - name: Push changes if any
