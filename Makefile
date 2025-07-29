@@ -7,7 +7,7 @@ add-remotes:
 
 # Caminhos dos teams
 TEAM_A_PREFIX=subrepo
-TEAM_B_PREFIX=subrepo-second
+TEAM_B_PREFIX=subrepo-number-2
 # TEAM_C_PREFIX=teams/team-c
 # TEAM_D_PREFIX=teams/team-d
 
@@ -19,6 +19,24 @@ TEAM_B_REMOTE=subrepo-number-2
 
 # Branch de origem
 BRANCH=main
+
+# =======================
+# ADD (via subtree)
+# =======================
+add-subtrees:
+	@if [ ! -d "subrepo" ]; then \
+		echo "Adding subtree: subrepo"; \
+		git subtree add --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH) --squash; \
+	else \
+		echo "Subtree 'subrepo' already exists, skipping."; \
+	fi
+
+	@if [ ! -d "subrepo-number-2" ]; then \
+		echo "Adding subtree: subrepo-number-2"; \
+		git subtree add --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH) --squash; \
+	else \
+		echo "Subtree 'subrepo-number-2' already exists, skipping."; \
+	fi
 
 # =======================
 # PULL (traz do subrepo)
