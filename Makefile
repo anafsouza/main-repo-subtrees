@@ -1,12 +1,19 @@
-# Caminhos dos teamos
+
+
+add-remotes:
+	git remote add subrepo https://github.com/anafsouza/subrepo.git || true
+	git remote add subrepo-number-2 https://github.com/anafsouza/subrepo-number-2.git || true
+
+
+# Caminhos dos teams
 TEAM_A_PREFIX=subrepo
 TEAM_B_PREFIX=subrepo-second
 # TEAM_C_PREFIX=teams/team-c
 # TEAM_D_PREFIX=teams/team-d
 
 # Nomes dos remotes
-TEAM_A_REMOTE=https://github.com/anafsouza/subrepo 
-TEAM_B_REMOTE=https://github.com/anafsouza/subrepo-number-2
+TEAM_A_REMOTE=subrepo 
+TEAM_B_REMOTE=subrepo-number-2
 # TEAM_C_REMOTE=team-c
 # TEAM_D_REMOTE=team-d
 
@@ -16,11 +23,13 @@ BRANCH=main
 # =======================
 # PULL (traz do subrepo)
 # =======================
-pull-team-a:
-	git subtree pull --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH) --squash
+pull-subrepo:
+	git fetch $(TEAM_A_REMOTE) $(BRANCH)
+	git subtree pull --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH) --squash || echo "Nothing to pull"
 
-pull-team-b:
-	git subtree pull --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH) --squash
+pull-subrepo-number-2:
+	git fetch $(TEAM_B_REMOTE) $(BRANCH)
+	git subtree pull --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH) --squash || echo "Nothing to pull"
 
 # pull-team-c:
 # 	git subtree pull --prefix=$(TEAM_C_PREFIX) $(TEAM_C_REMOTE) $(BRANCH) --squash
@@ -31,10 +40,10 @@ pull-team-b:
 # =======================
 # PUSH (envia para subrepo)
 # =======================
-push-team-a:
+push-subrepo:
 	git subtree push --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH)
 
-push-team-b:
+push-subrepo-number-2:
 	git subtree push --prefix=$(TEAM_B_PREFIX) $(TEAM_B_REMOTE) $(BRANCH)
 
 # push-team-c:
@@ -46,5 +55,7 @@ push-team-b:
 # =======================
 # Atalhos em grupo
 # =======================
-pull-all: pull-team-a pull-team-b 
-push-all: push-team-a push-team-b 
+pull-all: pull-subrepo pull-subrepo-number-2 
+push-all: push-subrepo push-subrepo-number-2 
+
+

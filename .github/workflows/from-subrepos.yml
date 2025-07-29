@@ -9,25 +9,20 @@ on:
 
 
 jobs:
-  sync:
+  sync-subtrees:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout main-repo-subtrees
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Configure Git user
+      - name: Set up Git config
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-      - name: Setup remotes
-        run: |
-          echo "Setting up subrepo remotes..."
-          git remote add subrepo https://github.com/anafsouza/subrepo.git || true
-          git remote add subrepo-number-2 https://x-access-token:${{ secrets.MLOPS_PROD_TOKEN }}@github.com/anafsouza/subrepo-number-2.git || true
+      - name: Add remotes
+        run: make add-remotes
 
-      - name: Pull matching subtree
+      - name: Sync subtrees
         run: |
           echo "Starting subtree sync..."
 
@@ -35,22 +30,14 @@ jobs:
           ACTION="${{ github.event.action }}"
           CHANGED_PATH=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | head -n 1)
 
-          echo "Subrepo: dispatch OR push that modified subrepo/"
           if [[ "$ACTION" == "update-from-subrepo" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo* ) ]]; then
-            echo "Syncing subrepo..."
-            git fetch subrepo main
-            git subtree pull --prefix=subrepo subrepo main --squash || echo "Nothing to pull"
-
-          echo "Subrepo-number-2: dispatch OR push that modified subrepo-number-2/"
+            make pull-subrepo
           elif [[ "$ACTION" == "update-from-subrepo-number-2" || ( "$EVENT" == "push" && "$CHANGED_PATH" == subrepo-number-2* ) ]]; then
-            echo "Syncing subrepo-number-2..."
-            git fetch subrepo-number-2 main
-            git subtree pull --prefix=subrepo-number-2 subrepo-number-2 main --squash || echo "Nothing to pull"
-
+            make pull-subrepo-number-2
           else
             echo "No matching subtree to sync or unknown trigger."
-            exit 0
           fi
+
 
       - name: Push changes if any
         run: |
