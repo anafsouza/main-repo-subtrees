@@ -26,7 +26,7 @@ BRANCH=main
 add-subtrees:
 	@if [ ! -d "subrepo" ]; then \
 		echo "Adding subtree: subrepo"; \
-		git subtree add --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH) --squash; \
+		git subtree add --prefix=$(TEAM_A_PREFIX) $(TEAM_A_REMOTE) $(BRANCH); \
 	else \
 		echo "Subtree 'subrepo' already exists, skipping."; \
 	fi
